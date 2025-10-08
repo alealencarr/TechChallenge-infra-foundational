@@ -1,6 +1,8 @@
 # TechChallenge - Base de Infra no Azure
 Rede Virtual (VNet) com as suas sub-redes, e a Conta de Armazenamento para o estado remoto do Terraform.
 
+[Documentação completa do projeto](https://alealencarr.github.io/TechChallenge/)
+
 ### Descrição
 Este repositório é a fundação de toda a nossa infraestrutura na Azure. Ele é responsável por criar os recursos de base, partilhados e de longa duração, sobre os quais todos os outros serviços serão construídos.
 
