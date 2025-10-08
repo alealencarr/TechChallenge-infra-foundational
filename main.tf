@@ -41,7 +41,6 @@ resource "azurerm_subnet" "app_subnet" {
   address_prefixes     = var.app_subnet_prefix
 }
 
-
 # 5. Cria um Grupo de Recursos SEPARADO para o estado do Terraform
 resource "azurerm_resource_group" "terraform_state_rg" {
   name     = "rg-terraform-state"

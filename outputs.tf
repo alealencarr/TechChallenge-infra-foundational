@@ -1,11 +1,11 @@
 output "resource_group_name" {
   description = "O nome do grupo de recursos principal."
-  value       = azurerm_resource_group.rg.name
+  value       = azurerm_resource_group.app_rg.name
 }
 
 output "location" {
   description = "A região do Azure onde os recursos foram criados."
-  value       = azurerm_resource_group.rg.location
+  value       = azurerm_resource_group.app_rg.location
 }
 
 output "vnet_id" {
@@ -25,10 +25,11 @@ output "app_subnet_id" {
 
 output "terraform_state_storage_account_name" {
   description = "O nome da conta de armazenamento para o estado do Terraform."
-  value       = azurerm_storage_account.terraform_state.name
+  value       = azurerm_storage_account.terraform_state_storage.name
 }
 
 output "terraform_state_container_name" {
   description = "O nome do contêiner para o estado do Terraform."
-  value       = azurerm_storage_container.terraform_state.name
+  value       = azurerm_storage_container.terraform_state_container.name
 }
+
