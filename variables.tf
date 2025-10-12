@@ -24,8 +24,14 @@ variable "aks_subnet_prefix" {
 
 variable "app_subnet_prefix" {
   type        = list(string)
-  description = "O prefixo de endereço para a sub-rede das aplicações (APIM, Functions)."
+  description = "O prefixo de endereço para a sub-rede das aplicações (Application Gateway)."
   default     = ["10.0.2.0/24"]
+}
+
+variable "privateendpoints_subnet_prefix" {
+  type        = list(string)
+  description = "O prefixo de endereço para a sub-rede dos endpoints privados."
+  default     = ["10.0.4.0/24"]
 }
 
 variable "terraform_state_storage_account_name" {
