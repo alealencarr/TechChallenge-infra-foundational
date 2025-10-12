@@ -1,4 +1,4 @@
-name: Deploy Infraestrutura Foundational com Terraform
+name: Deploy Infraestrutura Foundational
 
 on:
   push:
@@ -7,29 +7,83 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+
+env:
+  TF_VERSION: '1.5.0'
+  ARM_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
+  ARM_TENANT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).tenantId }}
+  ARM_CLIENT_ID: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
+  ARM_CLIENT_SECRET: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
 
 jobs:
   terraform:
-    name: 'Terraform'
+    name: 'Terraform Plan & Apply'
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout
+      # 1. Checkout do código
+      - name: 'Checkout code'
         uses: actions/checkout@v4
 
-      - name: Azure Login
+      # 2. Login no Azure
+      - name: 'Azure Login'
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Setup Terraform
+      # 3. Setup do Terraform
+      - name: 'Setup Terraform'
         uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
 
-      - name: Terraform Init
-        run: terraform init
+      # 4. Terraform Format Check (validação de formatação)
+      - name: 'Terraform Format Check'
+        run: |
+          echo "🔍 Checking Terraform formatting..."
+          terraform fmt -check -recursive
+        continue-on-error: true
 
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
+      # 5. Terraform Init
+      - name: 'Terraform Init'
+        run: |
+          echo "🔧 Initializing Terraform..."
+          terraform init
+          echo "✅ Terraform initialized!"
 
-      - name: Terraform Apply
+      # 6. Terraform Validate
+      - name: 'Terraform Validate'
+        run: |
+          echo "✅ Validating Terraform configuration..."
+          terraform validate
+          echo "✅ Configuration is valid!"
+
+      # 7. Terraform Plan
+      - name: 'Terraform Plan'
+        run: |
+          echo "📋 Planning infrastructure changes..."
+          terraform plan -out=tfplan
+          echo "✅ Plan complete!"
+
+      # 8. Terraform Apply (só na main e push)
+      - name: 'Terraform Apply'
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve tfplan
+        run: |
+          echo "🚀 Applying infrastructure changes..."
+          terraform apply -auto-approve tfplan
+          echo "✅ Infrastructure deployed successfully!"
+
+      # 9. Terraform Output (mostra outputs importantes)
+      - name: 'Show Terraform Outputs'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          echo "📊 Infrastructure Outputs:"
+          terraform output -json
+
+      # 10. Logout do Azure
+      - name: 'Azure Logout'
+        if: always()
+        run: |
+          az logout
+          echo "✅ Logged out from Azure"
