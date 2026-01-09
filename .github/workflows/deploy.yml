@@ -86,4 +86,4 @@ jobs:
         if: always()
         run: |
           az logout
-          echo "✅ Logged out from Azure" 
+          echo "✅ Logged out from Azure"
