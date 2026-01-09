@@ -9,7 +9,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-  resource_provider_registrations = "none"
+  skip_provider_registration = true
 }
 
 # 1. Cria o Grupo de Recursos principal da aplicação
