@@ -144,4 +144,3 @@ resource "azurerm_storage_container" "terraform_state_container" {
   storage_account_name  = azurerm_storage_account.terraform_state_storage.name
   container_access_type = "private"
 }
-
